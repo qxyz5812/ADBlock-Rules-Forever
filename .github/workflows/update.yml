@@ -35,7 +35,7 @@ jobs:
           if ! git diff --exit-code --quiet; then
             echo "File has changed. Committing and pushing..."
             git add "$TARGET_FILE"
-            git commit -m "chore(sync): Update and modify $TARGET_FILE from upstream"
+            git commit -m "Update and modify $TARGET_FILE from upstream"
             git push origin release
           else
             echo "File is already up-to-date. No changes to commit."
