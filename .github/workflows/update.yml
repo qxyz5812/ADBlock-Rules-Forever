@@ -2,7 +2,7 @@ name: Sync file
 
 on:
   schedule:
-    - cron: '28 * * * *'
+    - cron: '38 * * * *'
   #workflow_dispatch:
 
 jobs:
