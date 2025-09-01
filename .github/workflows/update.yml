@@ -21,13 +21,10 @@ jobs:
           echo "Downloading..."
           curl -sS -L "$SOURCE_URL" -o "$TARGET_FILE"
 
-          echo "Downloading done"
           if [ ! -f "$TARGET_FILE" ]; then
             echo "Error: File was not downloaded. Aborting."
             exit 1
           fi
-
-          echo "Downloading done"
 
           sed -i 's/DOMAIN-SUFFIX,bing.com,Proxy/DOMAIN-SUFFIX,bing.com,DIRECT/g' "$TARGET_FILE"
           echo "File content modified."
