@@ -25,20 +25,13 @@ jobs:
             echo "Error: File was not downloaded. Aborting."
             exit 1
           fi
-          
-      - name: Modify file content
-        run: |
-          TARGET_FILE="sr_cnip_ad.conf"
 
           sed -i '' 's/DOMAIN-SUFFIX,bing.com,Proxy/DOMAIN-SUFFIX,bing.com,DIRECT/g' "$TARGET_FILE"
           echo "File content modified."
 
-      - name: Commit and push changes
-        run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          TARGET_FILE="sr_cnip_ad.conf"
           if ! git diff --exit-code --quiet; then
             echo "File has changed. Committing and pushing..."
             git add "$TARGET_FILE"
