@@ -1,0 +1,49 @@
+name: Sync file
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync_file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: release
+
+      - name: Sync a single file from upstream
+        run: |
+          SOURCE_URL="https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_cnip_ad.conf"
+          TARGET_FILE="sr_cnip_ad.conf"
+          
+          curl -sS -L "$SOURCE_URL" -o "$TARGET_FILE"
+          
+          if [ ! -f "$TARGET_FILE" ]; then
+            echo "Error: File was not downloaded. Aborting."
+            exit 1
+          fi
+          
+      - name: Modify file content
+        run: |
+          TARGET_FILE="sr_cnip_ad.conf"
+
+          sed -i '' 's/DOMAIN-SUFFIX,bing.com,Proxy/DOMAIN-SUFFIX,bing.com,DIRECT/g' "$TARGET_FILE"
+          echo "File content modified."
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          TARGET_FILE="sr_cnip_ad.conf"
+          if ! git diff --exit-code --quiet; then
+            echo "File has changed. Committing and pushing..."
+            git add "$TARGET_FILE"
+            git commit -m "chore(sync): Update and modify $TARGET_FILE from upstream"
+            git push origin release
+          else
+            echo "File is already up-to-date. No changes to commit."
+          fi
